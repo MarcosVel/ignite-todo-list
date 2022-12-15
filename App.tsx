@@ -9,10 +9,26 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import logo from "./src/assets/logo.png";
+import emptyImg from "./src/assets/clipboard.png";
 import { COLORS } from "./src/theme/colors";
 import { Feather } from "@expo/vector-icons";
 
 export default function App() {
+  function renderEmpty() {
+    return (
+      <View style={styles.emptyView}>
+        <Image source={emptyImg} style={styles.emptyImg} />
+
+        <Text style={[styles.empty, { fontWeight: "bold" }]}>
+          Você ainda não tem tarefas cadastradas
+        </Text>
+        <Text style={styles.empty}>
+          Crie tarefas e organize seus itens a fazer
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" backgroundColor={COLORS.gray700} />
@@ -30,12 +46,7 @@ export default function App() {
           </TouchableOpacity>
         </View>
 
-        <Text style={[styles.empty, { fontWeight: "bold" }]}>
-          Open up App.tsx to teste working on your app!
-        </Text>
-        <Text style={styles.empty}>
-          Open up App.tsx to teste working on your app!
-        </Text>
+        {renderEmpty()}
       </View>
     </SafeAreaView>
   );
@@ -79,6 +90,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.blueDark,
     borderRadius: 6,
+  },
+  emptyView: {
+    marginTop: 20,
+    paddingTop: 48,
+    width: "100%",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderTopColor: COLORS.gray400,
+  },
+  emptyImg: {
+    marginBottom: 16,
   },
   empty: {
     color: COLORS.gray300,
