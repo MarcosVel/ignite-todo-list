@@ -1,10 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import {
   Image,
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -30,25 +32,48 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="light" backgroundColor={COLORS.gray700} />
-      <Image source={logo} style={styles.logo} />
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="light" backgroundColor={COLORS.gray700} />
 
-      <View style={styles.main}>
-        <View style={styles.add}>
-          <TextInput
-            style={styles.input}
-            placeholder="Adicione uma nova tarefa"
-            placeholderTextColor={COLORS.gray300}
-          />
-          <TouchableOpacity style={styles.addButton}>
-            <Feather name="plus-circle" size={20} color={COLORS.gray100} />
-          </TouchableOpacity>
+        <Image source={logo} style={styles.logo} />
+
+        <View style={styles.main}>
+          <View style={styles.add}>
+            <TextInput
+              style={styles.input}
+              placeholder="Adicione uma nova tarefa"
+              placeholderTextColor={COLORS.gray300}
+            />
+            <TouchableOpacity style={styles.addButton}>
+              <Feather name="plus-circle" size={20} color={COLORS.gray100} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.progress}>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={[styles.badgeText, { color: COLORS.blue }]}>
+                Criadas
+              </Text>
+              <View style={styles.badge}>
+                <Text style={styles.badgeQtd}>0</Text>
+              </View>
+            </View>
+
+            <View style={{ flexDirection: "row" }}>
+              <Text style={[styles.badgeText, { color: COLORS.purple }]}>
+                Concluídas
+              </Text>
+              <View style={styles.badge}>
+                <Text style={styles.badgeQtd}>0</Text>
+              </View>
+            </View>
+          </View>
+
+          {renderEmpty()}
         </View>
-
-        {renderEmpty()}
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -90,6 +115,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.blueDark,
     borderRadius: 6,
+  },
+  progress: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  badgeText: {
+    fontWeight: "bold",
+    marginRight: 8,
+  },
+  badge: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLORS.gray400,
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 99,
+  },
+  badgeQtd: {
+    color: COLORS.gray100,
+    fontWeight: "bold",
+    fontSize: 12,
+    lineHeight: 15,
   },
   emptyView: {
     marginTop: 20,
