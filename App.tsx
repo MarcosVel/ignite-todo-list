@@ -20,26 +20,53 @@ import { useState } from "react";
 import Item from "./src/components/Item";
 
 export default function App() {
-  const [list, setList] = useState<string[]>([]);
   const [task, setTask] = useState("");
+  const [list, setList] = useState<string[]>([]);
+  const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
 
   function handleTaskAdd() {
+    if (list.includes(task)) {
+      return Alert.alert("Ops", "Essa tarefa já existe!");
+    }
+
+    if (task.trim().length === 0) {
+      return Alert.alert("Ops", "Digite um nome para a tarefa.");
+    }
+
     setList(prevState => [...prevState, task]);
     setTask("");
   }
 
   function handleDeleteTask(item: string) {
-    Alert.alert("Remover Tarefa", "Deseja realmente remover a tarefa?", [
-      {
-        text: "Sim",
-        onPress: () =>
-          setList(prevState => prevState.filter(tasks => tasks !== item)),
-      },
-      {
-        text: "Não",
-        style: "cancel",
-      },
-    ]);
+    Alert.alert(
+      "Remover Tarefa",
+      `Deseja realmente remover essa tarefa?\n"${item}"`,
+      [
+        {
+          text: "Sim",
+          onPress: () => {
+            setList(prevState => prevState.filter(tasks => tasks !== item)),
+              setSelectedTasks(prevState =>
+                prevState.filter(tasksSelected => tasksSelected !== item)
+              );
+          },
+        },
+        {
+          text: "Não",
+          style: "cancel",
+        },
+      ]
+    );
+  }
+
+  function handleSelected(item: string) {
+    if (selectedTasks.includes(item)) {
+      return setSelectedTasks(prevState =>
+        prevState.filter(tasksSelected => tasksSelected !== item)
+      );
+    }
+
+    setSelectedTasks(prevState => [...prevState, item]);
   }
 
   function renderEmpty() {
@@ -93,7 +120,7 @@ export default function App() {
                 Concluídas
               </Text>
               <View style={styles.badge}>
-                <Text style={styles.badgeQtd}>0</Text>
+                <Text style={styles.badgeQtd}>{selectedTasks.length}</Text>
               </View>
             </View>
           </View>
@@ -102,7 +129,11 @@ export default function App() {
             data={list}
             keyExtractor={item => item}
             renderItem={({ item }) => (
-              <Item data={item} deleteTask={handleDeleteTask} />
+              <Item
+                data={item}
+                deleteTask={handleDeleteTask}
+                selected={handleSelected}
+              />
             )}
             ListEmptyComponent={() => renderEmpty()}
             style={{ width: "100%" }}

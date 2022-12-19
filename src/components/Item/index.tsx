@@ -6,23 +6,27 @@ import { COLORS } from "../../theme/colors";
 type Props = {
   data: string;
   deleteTask: (item: string) => void;
+  selected: (item: string) => void;
 };
 
-export default function Item({ data, deleteTask }: Props) {
+export default function Item({ data, deleteTask, selected }: Props) {
   const [isSelected, setIsSelected] = useState(false);
+
+  function handleSelectTask() {
+    setIsSelected(!isSelected);
+    selected(data);
+  }
 
   return (
     <TouchableOpacity
       style={isSelected ? styles.containerSelected : styles.container}
-      onPress={() => setIsSelected(!isSelected)}
+      onPress={handleSelectTask}
     >
-      <TouchableOpacity>
-        {isSelected ? (
-          <Ionicons name="checkmark-circle" size={20} color={COLORS.purple} />
-        ) : (
-          <Ionicons name="radio-button-off" size={20} color={COLORS.blue} />
-        )}
-      </TouchableOpacity>
+      {isSelected ? (
+        <Ionicons name="checkmark-circle" size={20} color={COLORS.purple} />
+      ) : (
+        <Ionicons name="radio-button-off" size={20} color={COLORS.blue} />
+      )}
       <Text style={isSelected ? styles.lineThrough : styles.text}>{data}</Text>
       <TouchableOpacity style={styles.trash} onPress={() => deleteTask(data)}>
         <Feather name="trash-2" size={20} color={COLORS.gray300} />
