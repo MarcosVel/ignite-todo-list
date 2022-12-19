@@ -1,5 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import {
+  Alert,
+  FlatList,
   Image,
   Keyboard,
   StyleSheet,
@@ -14,8 +16,21 @@ import logo from "./src/assets/logo.png";
 import emptyImg from "./src/assets/clipboard.png";
 import { COLORS } from "./src/theme/colors";
 import { Feather } from "@expo/vector-icons";
+import { useState } from "react";
+import Item from "./src/components/Item";
 
 export default function App() {
+  const [list, setList] = useState([
+    "Integer urna interdum massa libero auctor neque turpis turpis semper.",
+    "lorem ipsum dolor sit amet consectetur ads",
+  ]);
+  const [task, setTask] = useState("");
+
+  function handleTaskAdd() {
+    setList(prevState => [...prevState, task]);
+    setTask("");
+  }
+
   function renderEmpty() {
     return (
       <View style={styles.emptyView}>
@@ -44,8 +59,10 @@ export default function App() {
               style={styles.input}
               placeholder="Adicione uma nova tarefa"
               placeholderTextColor={COLORS.gray300}
+              value={task}
+              onChangeText={text => setTask(text)}
             />
-            <TouchableOpacity style={styles.addButton}>
+            <TouchableOpacity style={styles.addButton} onPress={handleTaskAdd}>
               <Feather name="plus-circle" size={20} color={COLORS.gray100} />
             </TouchableOpacity>
           </View>
@@ -56,7 +73,7 @@ export default function App() {
                 Criadas
               </Text>
               <View style={styles.badge}>
-                <Text style={styles.badgeQtd}>0</Text>
+                <Text style={styles.badgeQtd}>{list.length}</Text>
               </View>
             </View>
 
@@ -70,7 +87,13 @@ export default function App() {
             </View>
           </View>
 
-          {renderEmpty()}
+          <FlatList
+            data={list}
+            keyExtractor={item => item}
+            renderItem={({ item }) => <Item data={item} />}
+            ListEmptyComponent={() => renderEmpty()}
+            style={{ width: "100%" }}
+          />
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -121,6 +144,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 20,
   },
   badgeText: {
     fontWeight: "bold",
@@ -141,7 +165,6 @@ const styles = StyleSheet.create({
     lineHeight: 15,
   },
   emptyView: {
-    marginTop: 20,
     paddingTop: 48,
     width: "100%",
     alignItems: "center",
