@@ -5,9 +5,10 @@ import { COLORS } from "../../theme/colors";
 
 type Props = {
   data: string;
+  deleteTask: (item: string) => void;
 };
 
-export default function Item({ data }: Props) {
+export default function Item({ data, deleteTask }: Props) {
   const [isSelected, setIsSelected] = useState(false);
 
   return (
@@ -23,7 +24,7 @@ export default function Item({ data }: Props) {
         )}
       </TouchableOpacity>
       <Text style={isSelected ? styles.lineThrough : styles.text}>{data}</Text>
-      <TouchableOpacity style={styles.trash}>
+      <TouchableOpacity style={styles.trash} onPress={() => deleteTask(data)}>
         <Feather name="trash-2" size={20} color={COLORS.gray300} />
       </TouchableOpacity>
     </TouchableOpacity>

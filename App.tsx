@@ -20,15 +20,26 @@ import { useState } from "react";
 import Item from "./src/components/Item";
 
 export default function App() {
-  const [list, setList] = useState([
-    "Integer urna interdum massa libero auctor neque turpis turpis semper.",
-    "lorem ipsum dolor sit amet consectetur ads",
-  ]);
+  const [list, setList] = useState<string[]>([]);
   const [task, setTask] = useState("");
 
   function handleTaskAdd() {
     setList(prevState => [...prevState, task]);
     setTask("");
+  }
+
+  function handleDeleteTask(item: string) {
+    Alert.alert("Remover Tarefa", "Deseja realmente remover a tarefa?", [
+      {
+        text: "Sim",
+        onPress: () =>
+          setList(prevState => prevState.filter(tasks => tasks !== item)),
+      },
+      {
+        text: "Não",
+        style: "cancel",
+      },
+    ]);
   }
 
   function renderEmpty() {
@@ -90,7 +101,9 @@ export default function App() {
           <FlatList
             data={list}
             keyExtractor={item => item}
-            renderItem={({ item }) => <Item data={item} />}
+            renderItem={({ item }) => (
+              <Item data={item} deleteTask={handleDeleteTask} />
+            )}
             ListEmptyComponent={() => renderEmpty()}
             style={{ width: "100%" }}
           />
